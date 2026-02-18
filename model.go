@@ -32,6 +32,7 @@ type MemberGroupCreation struct {
 	Name        string
 	Description string
 	CreatedBy   int
+	IsActive    int
 }
 
 type MemberCreationUpdation struct {
@@ -367,7 +368,7 @@ func (membermodel MemberModel) CheckNameInMember(userid int, name string, DB *go
 // Member Group Update
 func (membermodel MemberModel) MemberGroupUpdate(membergroup *Tblmembergroup, id int, DB *gorm.DB, tenantid string) error {
 
-	if err := DB.Table("tbl_member_groups").Where("id=? and tenant_id=? ", id, tenantid).Updates(TblMemberGroup{Name: membergroup.Name, Slug: membergroup.Slug, Description: membergroup.Description, Id: membergroup.Id, ModifiedOn: membergroup.ModifiedOn, ModifiedBy: membergroup.ModifiedBy}).Error; err != nil {
+	if err := DB.Table("tbl_member_groups").Where("id=? and tenant_id=? ", id, tenantid).Updates(TblMemberGroup{Name: membergroup.Name, Slug: membergroup.Slug, Description: membergroup.Description, Id: membergroup.Id, ModifiedOn: membergroup.ModifiedOn, ModifiedBy: membergroup.ModifiedBy, IsActive: membergroup.IsActive}).Error; err != nil {
 
 		return err
 	}

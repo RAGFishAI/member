@@ -83,7 +83,7 @@ func (member *Member) CreateMemberGroup(membergrpc MemberGroupCreation, tenantid
 
 	membergroup.CreatedBy = membergrpc.CreatedBy
 
-	membergroup.IsActive = 1
+	membergroup.IsActive = membergrpc.IsActive
 	membergroup.TenantId = tenantid
 
 	membergroup.CreatedOn, _ = time.Parse("2006-01-02 15:04:05", time.Now().UTC().Format("2006-01-02 15:04:05"))
@@ -177,15 +177,15 @@ func (member *Member) GetGroupData(tenantid string) (membergroup []Tblmembergrou
 }
 
 // Get User id for mrmber group
- 
+
 func (member *Member) GetGroupDataid(tenantid string, name string) (membergroup Tblmembergroup, err error) {
- 
-    var memgroup Tblmembergroup
- 
-    membergrouplist, _ := Membermodel.GetGroupDataid(memgroup, member.DB, tenantid, name)
- 
-    return membergrouplist, nil
- 
+
+	var memgroup Tblmembergroup
+
+	membergrouplist, _ := Membermodel.GetGroupDataid(memgroup, member.DB, tenantid, name)
+
+	return membergrouplist, nil
+
 }
 
 // member group is_active

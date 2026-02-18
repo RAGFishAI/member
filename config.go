@@ -2,7 +2,7 @@ package member
 
 import (
 	"github.com/RAGFishAI/auth"
-	role "github.com/spurtcms/team-roles"
+	role "github.com/RAGFishAI/team-roles"
 	"gorm.io/gorm"
 )
 

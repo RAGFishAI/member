@@ -119,7 +119,7 @@ func TestCreateMemberGroup(t *testing.T) {
 	})
 	if permisison {
 
-		err := member.CreateMemberGroup(MemberGroupCreation{"sports", "indian team", 1}, "1")
+		err := member.CreateMemberGroup(MemberGroupCreation{"sports", "indian team", 1, 1}, "1")
 
 		if err != nil {
 
