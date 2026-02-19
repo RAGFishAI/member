@@ -1,7 +1,6 @@
 package member
 
 import (
-	"strings"
 	"time"
 
 	"github.com/RAGFishAI/member/migration"
@@ -42,15 +41,15 @@ func (member *Member) ListMembers(offset int, limit int, filter Filter, flag boo
 
 	for _, val := range memberlist {
 
-		var first = val.FirstName
-		var last = val.LastName
-		var firstn = strings.ToUpper(first[:1])
-		var lastn string
-		if val.LastName != "" {
-			lastn = strings.ToUpper(last[:1])
-		}
-		var Name = firstn + lastn
-		val.NameString = Name
+		// var first = val.FirstName
+		// var last = val.LastName
+		// var firstn = strings.ToUpper(first[:1])
+		// var lastn string
+		// if val.LastName != "" {
+		// 	lastn = strings.ToUpper(last[:1])
+		// }
+		// var Name = firstn + lastn
+		// val.NameString = Name
 		val.CreatedDate = val.CreatedOn.Format("02 Jan 2006 03:04 PM")
 		if !val.ModifiedOn.IsZero() {
 			val.ModifiedDate = val.ModifiedOn.Format("02 Jan 2006 03:04 PM")
@@ -244,7 +243,6 @@ func (member *Member) MultiSelectMembersStatus(memberid []int, status int, modif
 	return true, nil
 
 }
-
 
 func (member *Member) GetMemberAndProfileData(memberId int, emailid string, profileId int, profileSlug string, tenantid string) (Tblmember, error) {
 
