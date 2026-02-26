@@ -187,7 +187,7 @@ func (membermodel MemberModel) MemberGroupList(listre MemberGroupListReq, DB *go
 
 	if listre.ActiveGroupsOnly {
 
-		query = query.Where("is_active=1")
+		query = query.Where("tbl_member_groups.is_active=1")
 
 	}
 
