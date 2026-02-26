@@ -170,8 +170,9 @@ var Membermodel MemberModel
 // Member Group List
 func (membermodel MemberModel) MemberGroupList(listre MemberGroupListReq, DB *gorm.DB, tenantid string) (membergroup []Tblmembergroup, TotalMemberGroup int64, err error) {
 
-	query := DB.Table("tbl_member_groups").Where("tenant_id=?", tenantid).Scopes(IsDeleted).Order("id desc")
-
+	query := DB.Table("tbl_member_groups").Select("tbl_member_groups.*,count(tbl_members.member_group_id) as user_count").Joins("left join tbl_members on tbl_members.member_group_id = tbl_member_groups.id AND tbl_members.is_deleted = 0").Where("tbl_member_groups.tenant_id = ? AND tbl_member_groups.is_deleted = 0 ", tenantid).
+		Group("tbl_member_groups.id").
+		Order("tbl_member_groups.id DESC")
 	if membermodel.DataAccess == 1 {
 
 		query = query.Where("tbl_member_groups.created_by =?", membermodel.Userid)
@@ -227,9 +228,19 @@ func (membermodel MemberModel) MembersList(limit int, offset int, filter Filter,
 	}
 	if filter.Keyword != "" {
 
-		// feb 21
-
 		query = query.Where("LOWER(TRIM(tbl_members.first_name)) LIKE LOWER(TRIM(?)) OR LOWER(TRIM(tbl_members.last_name)) LIKE LOWER(TRIM(?))  OR LOWER(TRIM(tbl_member_groups.name)) LIKE LOWER(TRIM(?)) OR LOWER(TRIM(tbl_members.email)) LIKE LOWER(TRIM(?)) OR LOWER(TRIM(tbl_members.mobile_no)) LIKE LOWER(TRIM(?))  AND tbl_members.is_deleted=0 AND tbl_member_groups.is_deleted=0", "%"+filter.Keyword+"%", "%"+filter.Keyword+"%", "%"+filter.Keyword+"%", "%"+filter.Keyword+"%", "%"+filter.Keyword+"%")
+
+	}
+	if filter.Status != "" {
+
+		if filter.Status == "Active" {
+
+			query = query.Where("tbl_members.is_active = 1 AND tbl_members.is_deleted=0")
+
+		} else {
+			query = query.Where("tbl_members.is_active = 0 AND tbl_members.is_deleted=0")
+
+		}
 
 	}
 
@@ -373,11 +384,16 @@ func (membermodel MemberModel) CheckNameInMember(userid int, name string, DB *go
 // Member Group Update
 func (membermodel MemberModel) MemberGroupUpdate(membergroup *Tblmembergroup, id int, DB *gorm.DB, tenantid string) error {
 
-	if err := DB.Table("tbl_member_groups").Where("id=? and tenant_id=? ", id, tenantid).Updates(TblMemberGroup{Name: membergroup.Name, Slug: membergroup.Slug, Description: membergroup.Description, Id: membergroup.Id, ModifiedOn: membergroup.ModifiedOn, ModifiedBy: membergroup.ModifiedBy, IsActive: membergroup.IsActive}).Error; err != nil {
+	if err := DB.Table("tbl_member_groups").Where("id=? and tenant_id=? ", id, tenantid).Updates(map[string]interface{}{
+		"name":        membergroup.Name,
+		"slug":        membergroup.Slug,
+		"description": membergroup.Description,
+		"modified_on": membergroup.ModifiedOn,
+		"modified_by": membergroup.ModifiedBy,
+		"is_active":   membergroup.IsActive}).Error; err != nil {
 
 		return err
 	}
-
 	return nil
 }
 

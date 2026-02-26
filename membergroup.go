@@ -19,6 +19,7 @@ type Tblmembergroup struct {
 	DeletedOn   time.Time
 	DeletedBy   int
 	DateString  string `gorm:"-"`
+	UserCount   int    `gorm:"column:user_count;->"`
 }
 
 // Function ListMemberGroup pass the arguments of limit,offset and filter (eg. keywords)
