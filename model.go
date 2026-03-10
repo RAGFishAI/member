@@ -726,3 +726,14 @@ func (membermodel MemberModel) CheckChatUser(email string, DB *gorm.DB, TenantId
 	return member, nil
 
 }
+func (membermodel MemberModel) UpdateLastLogin(id int, DB *gorm.DB, logintime time.Time) error {
+
+	err := DB.Table("tbl_members").Where("id= ?", id).Update("login_time", logintime).Error
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+
+}
