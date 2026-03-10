@@ -711,12 +711,12 @@ func (membermodel MemberModel) Checkmembergroup(member *TblMember, id int, ids [
 	return nil
 }
 
-func (membermodel MemberModel) CheckChatUser(email string, DB *gorm.DB) (memberval TblMember, err error) {
+func (membermodel MemberModel) CheckChatUser(email string, DB *gorm.DB, TenantId string) (memberval TblMember, err error) {
 
 	var member TblMember
 
 	result := DB.Table("tbl_members").
-		Where("email = ? AND is_deleted = 0", email).
+		Where("email = ? AND is_deleted = 0 AND tenant_id = ? ", email, TenantId).
 		First(&member)
 
 	if result.Error != nil {
