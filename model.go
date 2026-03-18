@@ -137,7 +137,8 @@ type Tblmember struct {
 	Token            string    `gorm:"-"`
 	Claimstatus      int       `gorm:"-"`
 
-	TenantId string
+	TenantId        string
+	UserGroupActive int `gorm:"column:user_group_active"`
 }
 type TblMemberSetting struct {
 	Id                int
@@ -219,8 +220,7 @@ func (membermodel MemberModel) MemberGroupCreate(membergroup *TblMemberGroup, DB
 // Member list
 func (membermodel MemberModel) MembersList(limit int, offset int, filter Filter, flag bool, DB *gorm.DB, tenantid string) (member []Tblmember, Total_Member int64, err error) {
 
-	query := DB.Debug().Table("tbl_members").Select("tbl_members.id,tbl_members.uuid,tbl_members.member_group_id,tbl_members.first_name,tbl_members.last_name,tbl_members.email,tbl_members.mobile_no,tbl_members.profile_image,tbl_members.profile_image_path,tbl_members.created_on,tbl_members.created_by,tbl_members.modified_on,tbl_members.modified_by,tbl_members.is_active,tbl_members.is_deleted,tbl_members.deleted_on,tbl_members.deleted_by,tbl_member_groups.name as group_name,tbl_members.storage_type,tbl_members.username").Joins("left join tbl_member_groups on tbl_members.member_group_id = tbl_member_groups.id").Where("tbl_members.is_deleted=? and tbl_members.tenant_id=?", 0, tenantid).Order("id desc")
-
+	query := DB.Debug().Table("tbl_members").Select("tbl_members.id,tbl_members.uuid,tbl_members.member_group_id,tbl_members.first_name,tbl_members.last_name,tbl_members.email,tbl_members.mobile_no,tbl_members.profile_image,tbl_members.profile_image_path,tbl_members.created_on,tbl_members.created_by,tbl_members.modified_on,tbl_members.modified_by,tbl_members.is_active,tbl_members.is_deleted,tbl_members.deleted_on,tbl_members.deleted_by,tbl_member_groups.name as group_name,tbl_members.storage_type,tbl_members.username,tbl_member_groups.is_active as user_group_active").Joins("left join tbl_member_groups on tbl_members.member_group_id = tbl_member_groups.id").Where("tbl_members.is_deleted=? and tbl_members.tenant_id=?", 0, tenantid).Order("id desc")
 	if membermodel.DataAccess == 1 {
 
 		query = query.Where("tbl_members.created_by =?", membermodel.Userid)
@@ -413,7 +413,7 @@ func (membermodel MemberModel) GetGroupData(membergroup []Tblmembergroup, DB *go
 
 	var membergrouplist []Tblmembergroup
 
-	if err := DB.Table("tbl_member_groups").Where("is_deleted = 0 and is_active = 1 and tenant_id=?", tenantid).Order("name").Find(&membergrouplist).Error; err != nil {
+	if err := DB.Table("tbl_member_groups").Where("is_deleted = 0  and tenant_id=?", tenantid).Order("name").Find(&membergrouplist).Error; err != nil {
 
 		return []Tblmembergroup{}, err
 
