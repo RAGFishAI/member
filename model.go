@@ -8,7 +8,7 @@ import (
 
 type Filter struct {
 	Keyword       string
-	Role          string
+	Role          []string
 	Status        string
 	FromDate      string
 	ToDate        string
@@ -244,8 +244,12 @@ func (membermodel MemberModel) MembersList(limit int, offset int, filter Filter,
 
 	}
 
-	if filter.Role != "" {
-		query = query.Where("LOWER(TRIM(tbl_members.first_name)) LIKE LOWER(TRIM(?)) OR LOWER(TRIM(tbl_members.last_name)) LIKE LOWER(TRIM(?))  OR LOWER(TRIM(tbl_member_groups.name)) LIKE LOWER(TRIM(?)) OR LOWER(TRIM(tbl_members.email)) LIKE LOWER(TRIM(?)) OR LOWER(TRIM(tbl_members.mobile_no)) LIKE LOWER(TRIM(?))  AND tbl_members.is_deleted=0 AND tbl_member_groups.is_deleted=0", "%"+filter.Role+"%", "%"+filter.Role+"%", "%"+filter.Role+"%", "%"+filter.Role+"%", "%"+filter.Role+"%")
+	if len(filter.Role) > 0 {
+		query = query.Where(`
+        tbl_member_groups.name IN ?
+        AND tbl_members.is_deleted = 0
+        AND tbl_member_groups.is_deleted = 0
+    `, filter.Role)
 
 	}
 	if filter.FirstName != "" {
