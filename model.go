@@ -138,7 +138,7 @@ type Tblmember struct {
 	Claimstatus      int       `gorm:"-"`
 
 	TenantId        string
-	UserGroupActive int `gorm:"column:user_group_active"`
+	UserGroupActive int `gorm:"-"`
 }
 type TblMemberSetting struct {
 	Id                int
