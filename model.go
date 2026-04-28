@@ -14,6 +14,7 @@ type Filter struct {
 	ToDate        string
 	FirstName     string
 	MemberProfile bool
+	RoleId        int
 }
 
 type MemberGroupListReq struct {
@@ -250,6 +251,11 @@ func (membermodel MemberModel) MembersList(limit int, offset int, filter Filter,
         AND tbl_members.is_deleted = 0
         AND tbl_member_groups.is_deleted = 0
     `, filter.Role)
+
+	}
+
+	if filter.RoleId != 0 {
+		query = query.Where("tbl_members.member_group_id = ? AND tbl_members.is_deleted=0", filter.RoleId)
 
 	}
 	if filter.FirstName != "" {
